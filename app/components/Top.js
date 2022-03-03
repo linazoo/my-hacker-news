@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function MainNav({ selected, onUpdatePost }) {
   const posts = ["Top", "New"];
@@ -18,6 +19,11 @@ function MainNav({ selected, onUpdatePost }) {
     </ul>
   );
 }
+
+MainNav.propTypes = {
+  selected: PropTypes.string.isRequired,
+  onUpdatePost: PropTypes.func.isRequired,
+};
 
 export default class Top extends React.Component {
   constructor(props) {
