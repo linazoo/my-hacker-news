@@ -26,6 +26,35 @@ MainNav.propTypes = {
   onUpdatePost: PropTypes.func.isRequired,
 };
 
+function PostsGrid({ posts }) {
+  return (
+    <ul>
+      {posts.map((post, index) => {
+        const { title, url, time, by, descendants } = post;
+
+        return (
+          <li className="post" key={title}>
+            <a className="link" href={url}>
+              {title}
+            </a>
+
+            <div className="meta-info-light">
+              <span>
+                by <a href={url}>{by}</a> on {time} with &nbsp;
+                <a href={url}>{descendants}</a> comments
+              </span>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+PostsGrid.propTypes = {
+  posts: PropTypes.array.isRequired,
+};
+
 export default class Top extends React.Component {
   constructor(props) {
     super(props);
@@ -83,9 +112,7 @@ export default class Top extends React.Component {
 
         {error && <p>{error}</p>}
 
-        {posts[selectedPost] && (
-          <pre>{JSON.stringify(posts[selectedPost], null, 2)}</pre>
-        )}
+        {posts[selectedPost] && <PostsGrid posts={posts[selectedPost]} />}
       </React.Fragment>
     );
   }
