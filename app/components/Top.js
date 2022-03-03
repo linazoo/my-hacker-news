@@ -1,5 +1,24 @@
 import React from "react";
 
+function MainNav({ selected, onUpdatePost }) {
+  const posts = ["Top", "New"];
+  return (
+    <ul className="flex">
+      {posts.map((post) => (
+        <li key={post}>
+          <button
+            className="btn-clear nav-link"
+            style={post === selected ? { color: "rgb(187, 46,31" } : null}
+            onClick={() => onUpdatePost(post)}
+          >
+            {post}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default class Top extends React.Component {
   constructor(props) {
     super(props);
@@ -16,26 +35,12 @@ export default class Top extends React.Component {
     });
   }
   render() {
-    const posts = ["Top", "New"];
+    const { selectedPost } = this.state;
 
     return (
-      <ul className="flex">
-        {posts.map((post) => (
-          <li key={post}>
-            <button
-              className="btn-clear nav-link"
-              style={
-                post === this.state.selectedPost
-                  ? { color: "rgb(187, 46,31" }
-                  : null
-              }
-              onClick={() => this.updatePost(post)}
-            >
-              {post}
-            </button>
-          </li>
-        ))}
-      </ul>
+      <React.Fragment>
+        <MainNav selected={selectedPost} onUpdatePost={this.updatePost} />
+      </React.Fragment>
     );
   }
 }
