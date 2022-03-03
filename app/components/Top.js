@@ -32,7 +32,7 @@ export default class Top extends React.Component {
 
     this.state = {
       selectedPost: "Top",
-      posts: null,
+      posts: {},
       error: null,
     };
     this.updatePost = this.updatePost.bind(this);
@@ -47,26 +47,31 @@ export default class Top extends React.Component {
     this.setState({
       selectedPost,
       error: null,
-      posts: null,
     });
-    fetchMainPosts(selectedPost.toLowerCase())
-      .then((posts) => {
-        this.setState({
-          posts,
-          error: null,
-        });
-      })
-      .catch(() => {
-        console.warn("Error fetching repos: ", error);
 
-        this.setState({
-          error: `there was an error fetching the posts`,
+    if (!this.state.posts[selectedPost]) {
+      fetchMainPosts(selectedPost.toLowerCase())
+        .then((data) => {
+          this.setState(({ posts }) => ({
+            posts: {
+              ...posts,
+              [selectedPost]: data,
+            },
+          }));
+        })
+        .catch(() => {
+          console.warn("Error fetching repos: ", error);
+
+          this.setState({
+            error: `there was an error fetching the posts`,
+          });
         });
-      });
+    }
   }
 
   isLoading() {
-    return this.state.posts === null && this.state.error === null;
+    const { selectedPost, posts, error } = this.state;
+    return !posts[selectedPost] && error === null;
   }
   render() {
     const { selectedPost, posts, error } = this.state;
@@ -78,7 +83,9 @@ export default class Top extends React.Component {
 
         {error && <p>{error}</p>}
 
-        {posts && <pre>{JSON.stringify(posts, null, 2)}</pre>}
+        {posts[selectedPost] && (
+          <pre>{JSON.stringify(posts[selectedPost], null, 2)}</pre>
+        )}
       </React.Fragment>
     );
   }
