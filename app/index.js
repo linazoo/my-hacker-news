@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import Top from "./components/Top";
+import Profile from "./components/Profile";
 
 class App extends React.Component {
   render() {
