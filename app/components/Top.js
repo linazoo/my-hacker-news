@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { fetchItem, fetchMainPosts } from "../utils/api";
+import { convertTime } from "../utils/helpers";
 
 function MainNav({ selected, onUpdatePost }) {
   const posts = ["Top", "New"];
@@ -40,7 +41,7 @@ function PostsGrid({ posts }) {
 
             <div className="meta-info-light">
               <span>
-                by <a href={url}>{by}</a> on {time} with &nbsp;
+                by <a href={url}>{by}</a> on {convertTime(time)} with &nbsp;
                 <a href={url}>{descendants}</a> comments
               </span>
             </div>
