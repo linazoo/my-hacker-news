@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { fetchItem, fetchMainPosts } from "../utils/api";
+import { convertTime } from "../utils/helpers";
 
 function MainNav({ selected, onUpdatePost }) {
   const posts = ["Top", "New"];
@@ -24,6 +25,35 @@ function MainNav({ selected, onUpdatePost }) {
 MainNav.propTypes = {
   selected: PropTypes.string.isRequired,
   onUpdatePost: PropTypes.func.isRequired,
+};
+
+function PostsGrid({ posts }) {
+  return (
+    <ul>
+      {posts.map((post, index) => {
+        const { title, url, time, by, descendants } = post;
+
+        return (
+          <li className="post" key={title}>
+            <a className="link" href={url}>
+              {title}
+            </a>
+
+            <div className="meta-info-light">
+              <span>
+                by <a href={url}>{by}</a> on {convertTime(time)} with &nbsp;
+                <a href={url}>{descendants}</a> comments
+              </span>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+PostsGrid.propTypes = {
+  posts: PropTypes.array.isRequired,
 };
 
 export default class Top extends React.Component {
@@ -83,9 +113,7 @@ export default class Top extends React.Component {
 
         {error && <p>{error}</p>}
 
-        {posts[selectedPost] && (
-          <pre>{JSON.stringify(posts[selectedPost], null, 2)}</pre>
-        )}
+        {posts[selectedPost] && <PostsGrid posts={posts[selectedPost]} />}
       </React.Fragment>
     );
   }
