@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { fetchItem, fetchMainPosts } from "../utils/api";
 import { convertTime } from "../utils/helpers";
+import { Link } from "react-router-dom";
 
 function MainNav({ selected, onUpdatePost }) {
   const posts = ["Top", "New"];
@@ -27,7 +28,7 @@ MainNav.propTypes = {
   onUpdatePost: PropTypes.func.isRequired,
 };
 
-function PostsGrid({ posts }) {
+export function PostsGrid({ posts }) {
   return (
     <ul>
       {posts.map((post, index) => {
@@ -41,7 +42,8 @@ function PostsGrid({ posts }) {
 
             <div className="meta-info-light">
               <span>
-                by <a href={url}>{by}</a> on {convertTime(time)} with &nbsp;
+                by <Link to={`/user?id=${by}`}>{by}</Link> on{" "}
+                {convertTime(time)} with &nbsp;
                 <a href={url}>{descendants}</a> comments
               </span>
             </div>
