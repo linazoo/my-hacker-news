@@ -37,7 +37,7 @@ export class Profile extends React.Component {
             {this.state.user.karma} karma
           </p>
         </div>
-        <p>about information</p>
+        <p dangerouslySetInnerHTML={{ __html: this.state.user.about }} />
         <h2>Posts</h2>
         <PostsGrid posts={this.state.posts} />
       </div>
