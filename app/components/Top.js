@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { fetchItem, fetchMainPosts } from "../utils/api";
 import { convertTime } from "../utils/helpers";
 import { Link } from "react-router-dom";
+import Loading from "./Loading";
 
 function MainNav({ selected, onUpdatePost }) {
   const posts = ["Top", "New"];
@@ -111,7 +112,7 @@ export default class Top extends React.Component {
     return (
       <React.Fragment>
         <MainNav selected={selectedPost} onUpdatePost={this.updatePost} />
-        {this.isLoading() && <p>Loading</p>}
+        {this.isLoading() && <Loading />}
 
         {error && <p>{error}</p>}
 

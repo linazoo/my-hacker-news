@@ -3,6 +3,7 @@ import queryString from "query-string";
 import { fetchUser, fetchPosts } from "../utils/api";
 import { convertTime } from "../utils/helpers";
 import { PostsGrid } from "./Top";
+import Loading from "./Loading";
 
 export class Profile extends React.Component {
   constructor(props) {
@@ -11,6 +12,8 @@ export class Profile extends React.Component {
     this.state = {
       user: {},
       posts: [],
+      loading: true,
+      error: null,
     };
   }
 
@@ -18,18 +21,31 @@ export class Profile extends React.Component {
     const { id } = queryString.parse(location.search);
 
     fetchUser(id).then((data) => {
-      console.log(data);
+      // console.log(data);
       const firstTen = data.submitted.slice(0, 12);
-      this.setState({ user: data });
-      fetchPosts(firstTen).then((data) => {
-        this.setState({ posts: data });
+      this.setState({
+        user: data,
       });
+      fetchPosts(firstTen)
+        .then((data) => {
+          this.setState({
+            posts: data,
+            error: null,
+            loading: false,
+          });
+        })
+        .catch(({ message }) => {
+          this.setState({
+            error: message,
+            loading: false,
+          });
+        });
     });
   }
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <h1>{this.state.user?.id}</h1>
         <div className="meta-info-light">
           <p>
@@ -39,8 +55,12 @@ export class Profile extends React.Component {
         </div>
         <p dangerouslySetInnerHTML={{ __html: this.state.user.about }} />
         <h2>Posts</h2>
-        <PostsGrid posts={this.state.posts} />
-      </div>
+        {this.state.loading ? (
+          <Loading />
+        ) : (
+          <PostsGrid posts={this.state.posts} />
+        )}
+      </React.Fragment>
     );
   }
 }
