@@ -2,7 +2,7 @@ import React from "react";
 import queryString from "query-string";
 import { fetchUser, fetchPosts } from "../utils/api";
 import { convertTime } from "../utils/helpers";
-import { PostsGrid } from "./Top";
+import { PostsGrid } from "./PostsGrid";
 import Loading from "./Loading";
 
 export class Profile extends React.Component {

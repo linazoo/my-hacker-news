@@ -4,115 +4,19 @@ import { fetchItem, fetchMainPosts } from "../utils/api";
 import { convertTime } from "../utils/helpers";
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
-
-function MainNav({ selected, onUpdatePost }) {
-  const posts = ["Top", "New"];
-  return (
-    <ul className="flex">
-      {posts.map((post) => (
-        <li key={post}>
-          <button
-            className="btn-clear nav-link"
-            style={post === selected ? { color: "rgb(187, 46,31" } : null}
-            onClick={() => onUpdatePost(post)}
-          >
-            {post}
-          </button>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-MainNav.propTypes = {
-  selected: PropTypes.string.isRequired,
-  onUpdatePost: PropTypes.func.isRequired,
-};
-
-export function PostsGrid({ posts }) {
-  return (
-    <ul>
-      {posts.map((post, index) => {
-        const { title, url, time, by, descendants } = post;
-
-        return (
-          <li className="post" key={title}>
-            <a className="link" href={url}>
-              {title}
-            </a>
-
-            <div className="meta-info-light">
-              <span>
-                by <Link to={`/user?id=${by}`}>{by}</Link> on{" "}
-                {convertTime(time)} with &nbsp;
-                <a href={url}>{descendants}</a> comments
-              </span>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-PostsGrid.propTypes = {
-  posts: PropTypes.array.isRequired,
-};
+import { PostsGrid } from "./PostsGrid";
 
 export default class Top extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      selectedPost: "Top",
-      posts: {},
-      error: null,
-    };
-    this.updatePost = this.updatePost.bind(this);
-    this.isLoading = this.isLoading.bind(this);
   }
 
-  componentDidMount() {
-    this.updatePost(this.state.selectedPost);
-  }
-
-  updatePost(selectedPost) {
-    this.setState({
-      selectedPost,
-      error: null,
-    });
-
-    if (!this.state.posts[selectedPost]) {
-      fetchMainPosts(selectedPost.toLowerCase())
-        .then((data) => {
-          this.setState(({ posts }) => ({
-            posts: {
-              ...posts,
-              [selectedPost]: data,
-            },
-          }));
-        })
-        .catch(() => {
-          console.warn("Error fetching repos: ", error);
-
-          this.setState({
-            error: `there was an error fetching the posts`,
-          });
-        });
-    }
-  }
-
-  isLoading() {
-    const { selectedPost, posts, error } = this.state;
-    return !posts[selectedPost] && error === null;
-  }
   render() {
-    const { selectedPost, posts, error } = this.state;
+    const { selectedPost, posts, isLoading, error } = this.props;
 
     return (
       <React.Fragment>
-        <MainNav selected={selectedPost} onUpdatePost={this.updatePost} />
-        {this.isLoading() && <Loading />}
+        {isLoading && <Loading />}
 
         {error && <p>{error}</p>}
 
