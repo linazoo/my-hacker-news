@@ -2,8 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { convertTime } from "../utils/helpers";
+import Loading from "./Loading";
 
 export function PostsGrid({ posts }) {
+  if (!posts) {
+    return <Loading />;
+  }
   return (
     <ul>
       {posts.map((post, index) => {
@@ -32,3 +36,5 @@ export function PostsGrid({ posts }) {
 PostsGrid.propTypes = {
   posts: PropTypes.array.isRequired,
 };
+
+export default PostsGrid;

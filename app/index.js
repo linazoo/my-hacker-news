@@ -4,6 +4,7 @@ import "./index.css";
 import Top from "./components/Top";
 import { MainNav } from "./components/MainNav";
 import Profile from "./components/Profile";
+import PostsGrid from "./components/PostsGrid";
 import { Post } from "./components/Post";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { fetchItem, fetchMainPosts } from "./utils/api";
@@ -28,6 +29,7 @@ class App extends React.Component {
     return !posts[selectedPost] && error === null;
   }
   updatePost(selectedPost) {
+    console.log("is this firing?");
     this.setState({
       selectedPost,
       error: null,
@@ -44,7 +46,7 @@ class App extends React.Component {
           }));
         })
         .catch(() => {
-          console.warn("Error fetching repos: ", error);
+          console.warn("Error fetching posts: ", error);
 
           this.setState({
             error: `there was an error fetching the posts`,
@@ -75,6 +77,12 @@ class App extends React.Component {
               )}
             ></Route>
             <Route path="/user" component={Profile}></Route>
+            <Route
+              path="/new"
+              render={(props) => (
+                <PostsGrid posts={this.state.posts[this.state.selectedPost]} />
+              )}
+            ></Route>
             <Route path="/post" component={Post}></Route>
           </Switch>
         </Router>
