@@ -22,9 +22,13 @@ export class Post extends React.Component {
       this.setState({
         title,
       });
-      fetchComments(kids).then((data) => {
-        this.updateComments(data);
-      });
+      fetchComments(kids)
+        .then((data) => {
+          this.updateComments(data);
+        })
+        .catch((error) => {
+          console.warn("Error fetching: ", error);
+        });
     });
   }
 
@@ -43,7 +47,7 @@ export class Post extends React.Component {
         <ul>
           {this.state.comments.map(({ by, text, time }) => {
             return (
-              <li className="comment">
+              <li key={time} className="comment">
                 <div className="meta-info-light">
                   <span>
                     by <Link to={`/user?id=${by}`}>{by}</Link>
