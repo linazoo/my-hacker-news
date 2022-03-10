@@ -29,7 +29,7 @@ class App extends React.Component {
     return !posts[selectedPost] && error === null;
   }
   updatePost(selectedPost) {
-    console.log("is this firing?");
+    // console.log("is this firing?");
     this.setState({
       selectedPost,
       error: null,
