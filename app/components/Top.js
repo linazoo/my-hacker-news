@@ -2,22 +2,14 @@ import React from "react";
 import Loading from "./Loading";
 import { PostsGrid } from "./PostsGrid";
 
-export default class Top extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+export default function Top({ selectedPost, posts, isLoading, error }) {
+  return (
+    <>
+      {isLoading && <Loading />}
 
-  render() {
-    const { selectedPost, posts, isLoading, error } = this.props;
+      {error && <p>{error}</p>}
 
-    return (
-      <React.Fragment>
-        {isLoading && <Loading />}
-
-        {error && <p>{error}</p>}
-
-        {posts[selectedPost] && <PostsGrid posts={posts[selectedPost]} />}
-      </React.Fragment>
-    );
-  }
+      {posts[selectedPost] && <PostsGrid posts={posts[selectedPost]} />}
+    </>
+  );
 }
