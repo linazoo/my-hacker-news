@@ -10,7 +10,7 @@ export function PostsGrid({ posts }) {
   }
   return (
     <ul>
-      {posts.map((post, index) => {
+      {posts.map((post) => {
         const { title, url, time, by, descendants, id } = post;
 
         return (

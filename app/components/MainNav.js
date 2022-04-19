@@ -28,6 +28,6 @@ export function MainNav({ selected, onUpdatePost }) {
 }
 
 MainNav.propTypes = {
-  selected: PropTypes.string.isRequired,
-  onUpdatePost: PropTypes.func.isRequired,
+  selected: PropTypes.string,
+  onUpdatePost: PropTypes.func,
 };

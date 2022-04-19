@@ -2,7 +2,7 @@ import React from "react";
 import Loading from "./Loading";
 import { PostsGrid } from "./PostsGrid";
 
-export default function Top({ selectedPost, posts, isLoading, error }) {
+export default function Posts({ selectedPost, posts, isLoading, error }) {
   return (
     <>
       {isLoading && <Loading />}

@@ -1,75 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import { fetchUser, fetchPosts } from "../utils/api";
 import { convertTime } from "../utils/helpers";
 import { PostsGrid } from "./PostsGrid";
 import Loading from "./Loading";
 
-export class Profile extends React.Component {
-  constructor(props) {
-    super(props);
+export default function Profile() {
+  const [user, setUser] = useState({});
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    this.state = {
-      user: {},
-      posts: [],
-      loading: true,
-      error: null,
-    };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     const { id } = queryString.parse(location.search);
 
     fetchUser(id).then((data) => {
-      // console.log(data);
       const firstTen = data.submitted.slice(0, 12);
-      this.setState({
-        user: data,
-      });
+      setUser(data);
       fetchPosts(firstTen)
         .then((data) => {
-          this.setState({
-            posts: data,
-            error: null,
-            loading: false,
-          });
+          setPosts(data);
+          setLoading(false);
+          setError(null);
         })
         .catch(({ message }) => {
-          this.setState({
-            error: message,
-            loading: false,
-          });
+          setError(message);
+          setLoading(false);
         });
     });
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <h1>{this.state.user?.id}</h1>
-        <div className="meta-info-light">
-          <p>
-            joined {convertTime(this.state.user.created)} has{" "}
-            {this.state.user.karma} karma
-          </p>
-        </div>
-        <p dangerouslySetInnerHTML={{ __html: this.state.user.about }} />
-        <h2>Posts</h2>
-        {this.state.loading ? (
-          <Loading />
-        ) : (
-          <PostsGrid posts={this.state.posts} />
-        )}
-      </React.Fragment>
-    );
-  }
-}
-export default class User extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Profile />
-      </React.Fragment>
-    );
-  }
+  });
+  return (
+    <>
+      <h1>{user?.id}</h1>
+      <div className="meta-info-light">
+        <p>
+          joined {convertTime(user.created)} has {user.karma} karma
+        </p>
+      </div>
+      <p dangerouslySetInnerHTML={{ __html: user.about }} />
+      <h2>Posts</h2>
+      {loading ? <Loading /> : <PostsGrid posts={posts} />}
+    </>
+  );
 }

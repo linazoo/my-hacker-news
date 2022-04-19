@@ -1,94 +1,79 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Top from "./components/Top";
+import Posts from "./components/Posts";
 import { MainNav } from "./components/MainNav";
 import Profile from "./components/Profile";
 import PostsGrid from "./components/PostsGrid";
 import { Post } from "./components/Post";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { fetchItem, fetchMainPosts } from "./utils/api";
+import { fetchMainPosts } from "./utils/api";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+export default function App() {
+  const [selectedPost, setSelectedPost] = useState("Top");
+  const [posts, setPosts] = useState({});
+  const [error, setError] = useState(null);
 
-    this.state = {
-      selectedPost: "Top",
-      posts: {},
-      error: null,
-    };
-    this.updatePost = this.updatePost.bind(this);
-    this.isLoading = this.isLoading.bind(this);
-  }
-  componentDidMount() {
-    this.updatePost(this.state.selectedPost);
-  }
-  isLoading() {
-    const { selectedPost, posts, error } = this.state;
+  function isLoading() {
     return !posts[selectedPost] && error === null;
   }
-  updatePost(selectedPost) {
-    // console.log("is this firing?");
-    this.setState({
-      selectedPost,
-      error: null,
-    });
 
-    if (!this.state.posts[selectedPost]) {
+  function updatePost(selectedPost) {
+    setSelectedPost(selectedPost);
+    console.log({ selectedPost });
+    setError(null);
+    if (!posts[selectedPost]) {
       fetchMainPosts(selectedPost.toLowerCase())
         .then((data) => {
-          this.setState(({ posts }) => ({
-            posts: {
-              ...posts,
-              [selectedPost]: data,
-            },
+          // console.log({ posts });
+          setPosts((posts) => ({
+            posts,
+            [selectedPost]: data,
           }));
+          // console.log({ posts });
         })
         .catch(() => {
           console.warn("Error fetching posts: ", error);
 
-          this.setState({
+          setError({
             error: `there was an error fetching the posts`,
           });
         });
     }
   }
-  render() {
-    return (
-      <div className="container">
-        <MainNav
-          selected={this.state.selectedPost}
-          onUpdatePost={this.updatePost}
-        />
-        <Router>
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={(props) => (
-                <Top
-                  {...props}
-                  selectedPost={this.state.selectedPost}
-                  posts={this.state.posts}
-                  error={this.state.error}
-                  isLoading={this.isLoading()}
-                />
-              )}
-            ></Route>
-            <Route path="/user" component={Profile}></Route>
-            <Route
-              path="/new"
-              render={(props) => (
-                <PostsGrid posts={this.state.posts[this.state.selectedPost]} />
-              )}
-            ></Route>
-            <Route path="/post" component={Post}></Route>
-          </Switch>
-        </Router>
-      </div>
-    );
-  }
+
+  useEffect(() => {
+    updatePost(selectedPost);
+  }, []);
+
+  return (
+    <div className="container">
+      <MainNav selected={selectedPost} onUpdatePost={updatePost} />
+      <Router>
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={(props) => (
+              <Posts
+                {...props}
+                selectedPost={selectedPost}
+                posts={posts}
+                error={error}
+                isLoading={isLoading()}
+              />
+            )}
+          ></Route>
+          <Route path="/user" component={Profile}></Route>
+          <Route
+            path="/new"
+            render={(props) => <PostsGrid posts={posts[selectedPost]} />}
+          ></Route>
+          <Route path="/post" component={Post}></Route>
+        </Switch>
+      </Router>
+    </div>
+  );
 }
 
 ReactDOM.render(<App />, document.getElementById("app"));
