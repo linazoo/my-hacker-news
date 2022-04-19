@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Top from "./components/Top";
+import Posts from "./components/Posts";
 import { MainNav } from "./components/MainNav";
 import Profile from "./components/Profile";
 import PostsGrid from "./components/PostsGrid";
@@ -55,7 +55,7 @@ export default function App() {
             exact
             path="/"
             render={(props) => (
-              <Top
+              <Posts
                 {...props}
                 selectedPost={selectedPost}
                 posts={posts}
